@@ -15,3 +15,4 @@ C-Wire/
 ├── graphs/           # Graphiques générés
 ├── tmp/              #
 
+./c-wire.sh data/c-wire_v00.csv lv all

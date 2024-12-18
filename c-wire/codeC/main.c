@@ -47,51 +47,39 @@ static void parse_csv_line(char* line, Record* record) {
     if (token && strlen(token) > 0) record->load = atof(token);
 }
 
-// Vérification des lignes appartenant réellement au type de station demandé
-// hvb: hvb_station non vide, hva_station et lv_station vides, c'est-à-dire juste hvb.
-// hva: hva_station non vide, lv_station vide.
-// lv : lv_station non vide (postes LV ou conso LV), on ne filtre pas sur hva_station pour LV car un poste LV est alimenté par une station hva. Le critère principal est la présence de lv_station.
+static int is_empty_or_dash(const char* str) {
+    return str == NULL || strlen(str) == 0 || strcmp(str, "-") == 0;
+}
+
+// Vérifie si la chaîne contient un identifiant valide (non vide et pas un tiret)
+static int is_valid_id(const char* str) {
+    return str != NULL && strlen(str) > 0 && strcmp(str, "-") != 0;
+}
+
 static int line_belongs_to_station_type(const Record* r, const char* station_type) {
     if (strcmp(station_type, "hvb") == 0) {
-        // HVB station or consumer: hvb_station must not be empty
-        // and hva_station, lv_station should ideally be empty. 
-        // Toutefois, selon l'exemple, un consommateur HVB a hvb et pas hva ni lv.
-        if (strlen(r->hvb_station) > 0 && strlen(r->hva_station) == 0 && strlen(r->lv_station) == 0) {
-            return 1;
-        } else {
-            return 0;
-        }
+        // HVB station: doit avoir un ID HVB valide
+        return is_valid_id(r->hvb_station);
     } else if (strcmp(station_type, "hva") == 0) {
-        // HVA station or consumer: hva_station not empty, lv_station empty
-        if (strlen(r->hva_station) > 0 && strlen(r->lv_station) == 0) {
-            return 1;
-        } else {
-            return 0;
-        }
+        // HVA station: doit avoir un ID HVA valide
+        return is_valid_id(r->hva_station);
     } else if (strcmp(station_type, "lv") == 0) {
-        // LV station or consumer: lv_station not empty
-        // Un poste LV a hv_a et lv, un consommateur LV a lv non vide. 
-        // On se base sur lv_station non vide simplement.
-        if (strlen(r->lv_station) > 0) {
-            return 1;
-        } else {
-            return 0;
-        }
+        // LV station: doit avoir un ID LV valide
+        return is_valid_id(r->lv_station);
     }
     return 0;
 }
 
-// Conditions sur les consommateurs
 static int is_company_only(const Record* r) {
-    return (strlen(r->company) > 0 && strlen(r->individual) == 0);
+    return is_valid_id(r->company) && is_empty_or_dash(r->individual);
 }
 
 static int is_individual_only(const Record* r) {
-    return (strlen(r->individual) > 0 && strlen(r->company) == 0);
+    return is_valid_id(r->individual) && is_empty_or_dash(r->company);
 }
 
 static int is_any_consumer(const Record* r) {
-    return (strlen(r->company) > 0 || strlen(r->individual) > 0);
+    return is_valid_id(r->company) || is_valid_id(r->individual);
 }
 
 int main(int argc, char* argv[]) {
@@ -126,48 +114,34 @@ int main(int argc, char* argv[]) {
         parse_csv_line(line, &record);
 
         if (!line_belongs_to_station_type(&record, station_type)) {
-            continue; // ignorer les lignes qui ne correspondent pas au type de station
+            continue;
         }
 
         const char* station_id = NULL;
-        double capacity = 0;
+        double capacity = record.capacity;
         double load = 0;
 
         if (strcmp(station_type, "hvb") == 0) {
-            station_id = (strlen(record.hvb_station) > 0) ? record.hvb_station : NULL;
-            capacity = record.capacity;
-            // hvb comp seulement
-            if (strcmp(consumer_type, "comp") == 0 && is_company_only(&record) && record.load > 0) {
-                load = record.load;
-                processed_count++;
-            }
+            station_id = record.hvb_station;
         } else if (strcmp(station_type, "hva") == 0) {
-            station_id = (strlen(record.hva_station) > 0) ? record.hva_station : NULL;
-            capacity = record.capacity;
-            // hva comp seulement
-            if (strcmp(consumer_type, "comp") == 0 && is_company_only(&record) && record.load > 0) {
-                load = record.load;
-                processed_count++;
-            }
+            station_id = record.hva_station;
         } else if (strcmp(station_type, "lv") == 0) {
-            station_id = (strlen(record.lv_station) > 0) ? record.lv_station : NULL;
-            capacity = record.capacity;
-            if (strcmp(consumer_type, "comp") == 0 && is_company_only(&record) && record.load > 0) {
-                load = record.load;
-                processed_count++;
-            } else if (strcmp(consumer_type, "indiv") == 0 && is_individual_only(&record) && record.load > 0) {
-                load = record.load;
-                processed_count++;
-            } else if (strcmp(consumer_type, "all") == 0 && is_any_consumer(&record) && record.load > 0) {
-                load = record.load;
-                processed_count++;
-            }
+            station_id = record.lv_station;
         }
 
-        if (station_id != NULL && strlen(station_id) > 0) {
-            // On insère même si load=0, car on a besoin de la capacité
-            // pour que la station soit connue.
-            // Le chargement se cumulera sur de multiples insertions du même ID.
+        // Vérifie si c'est une ligne de consommation valide selon le type demandé
+        if (strcmp(consumer_type, "comp") == 0 && is_company_only(&record)) {
+            load = record.load;
+            processed_count++;
+        } else if (strcmp(consumer_type, "indiv") == 0 && is_individual_only(&record)) {
+            load = record.load;
+            processed_count++;
+        } else if (strcmp(consumer_type, "all") == 0 && is_any_consumer(&record)) {
+            load = record.load;
+            processed_count++;
+        }
+
+        if (is_valid_id(station_id)) {
             root = insert(root, station_id, capacity, load);
         }
     }

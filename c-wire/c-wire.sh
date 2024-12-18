@@ -27,6 +27,7 @@ if [ "$1" == "-h" ]; then
     show_help
 fi
 
+# Vérification du nombre minimum d'arguments
 if [ $# -lt 3 ]; then
     echo "Error: Not enough arguments."
     show_help
@@ -77,7 +78,7 @@ echo "Processing file: $CSV_FILE ($(($file_size/1024/1024)) MB)"
 
 # Create/clean directories
 mkdir -p tmp graphs output
-rm -f tmp/*
+rm -f tmp/* output/* graphs/*
 
 # Move to codeC directory for compilation
 cd codeC || exit 1
@@ -133,56 +134,68 @@ echo "Execution time: ${DURATION}s"
 if [ -s "$OUTCSV" ]; then
     # Sort by capacity ascending (column 2)
     SORTED="output/${OUTFILE_BASE}_sorted.csv"
-    head -n 1 "$OUTCSV" > "$SORTED"
-    tail -n +2 "$OUTCSV" | sort -t: -k2,2n >> "$SORTED"
+    header=$(head -n 1 "$OUTCSV")
+    echo "$header" > "$SORTED"
+    tail -n +2 "$OUTCSV" | grep -v '^-:' | sort -t: -k2,2n >> "$SORTED"
 
-    # If lv all, create lv_all_minmax.csv
+    # Si lv all, créer lv_all_minmax.csv
     if [ "$STATION_TYPE" == "lv" ] && [ "$CONSUMER_TYPE" == "all" ]; then
         MINMAX="output/lv_all_minmax.csv"
         if [ -n "$POWER_PLANT_ID" ]; then
             MINMAX="output/lv_all_minmax_${POWER_PLANT_ID}.csv"
         fi
 
-        head -n 1 "$SORTED" > tmp/header_minmax.txt
-        tail -n +2 "$SORTED" | awk -F':' '{
-            diff=$3-$2; if(diff<0) diff=-diff;
-            print $0":"diff
-        }' | sort -t: -k4,4nr > tmp/lv_all_diff_sorted.csv
+        # Garde l'en-tête
+        echo "$header" > "$MINMAX"
 
-        head -n 10 tmp/lv_all_diff_sorted.csv > tmp/top10.csv
-        tail -n 10 tmp/lv_all_diff_sorted.csv > tmp/bottom10.csv
+        # Calcule la différence (capacité - consommation) et trie
+        tail -n +2 "$SORTED" | awk -F':' '$1 != "-" {
+            diff = $2 - $3;
+            printf "%s:%s:%s:%.0f\n", $1, $2, $3, diff;
+        }' | sort -t: -k4,4n -u > tmp/diff_sorted.csv
 
-        cat tmp/header_minmax.txt > "$MINMAX"
-        # Remove the diff column
-        cat tmp/top10.csv tmp/bottom10.csv | cut -d: -f1-3 >> "$MINMAX"
+        # Sélectionne les 10 premiers et 10 derniers uniquement
+        {
+            head -n 10 tmp/diff_sorted.csv
+            tail -n 10 tmp/diff_sorted.csv
+        } | sort -t: -k4,4n | cut -d: -f1-3 >> "$MINMAX"
 
-        # If gnuplot is available, generate a graph
+        # Si gnuplot est disponible, génère un graphique
         if command -v gnuplot &> /dev/null; then
-            # Prepare data for gnuplot
-            tail -n +2 "$MINMAX" | awk -F':' '{
-                diff=$3-$2;
-                print $1":"$2":"$3":"diff
-            }' > tmp/lv_graph_data.csv
-
-            awk -F':' 'BEGIN{i=0}{i++; print i":"$1":"$2":"$3":"$4}' tmp/lv_graph_data.csv > tmp/lv_graph_data_idx.csv
+            # Prépare les données pour gnuplot
+            awk -F':' '{
+                station=$1;
+                capacity=$2;
+                consumption=$3;
+                diff=capacity-consumption;
+                if (diff > 0) {
+                    color="green";
+                } else {
+                    color="red";
+                }
+                printf "%s\t%s\t%s\t%s\t%s\n", station, capacity, consumption, diff, color;
+            }' "$MINMAX" > tmp/graph_data.txt
 
             gnuplot <<- EOF
-                set terminal png size 1024,600
+                set terminal png size 1200,800
                 set output "graphs/lv_consumption.png"
                 set title "Top 10 Most and Least Loaded LV Stations"
                 set style data histograms
                 set style fill solid
-                set boxwidth 0.5
+                set boxwidth 0.8
                 set xtics rotate by -45
-                set key off
-                plot 'tmp/lv_graph_data_idx.csv' using 1:($4+($3-$2)):(4) with boxes lc variable title "Consumption"
+                set grid y
+                set ylabel "kWh"
+                plot 'tmp/graph_data.txt' using 3:xtic(1) title "Consommation" lc rgb "blue", \
+                     '' using 2 title "Capacité" lc rgb "green"
 EOF
         else
             echo "Warning: gnuplot not found, skipping graph generation"
         fi
     fi
 else
-    echo "Warning: No output was generated."
+    echo "Warning: No output was generated in $OUTCSV"
+    echo "Check $LOGFILE for potential errors"
 fi
 
 echo "Check $LOGFILE for execution details."
