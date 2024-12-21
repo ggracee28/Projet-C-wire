@@ -9,19 +9,22 @@ Il permet d'évaluer la production et la consommation d'énergie à différents 
 ## Structure du projet
 
 ```
-C-Wire/
+c-wire/
 ├── c-wire.sh          # Script shell principal
 ├── codeC/             # Code source C
-│   ├── main.c         # Programme principal
+│   ├── Makefile       # Fichier Makefile pour la compilation
 │   ├── avl_tree.c     # Implémentation de l'arbre AVL
 │   ├── avl_tree.h     # Déclaration des fonctions et structures AVL
-│   └── Makefile       # Fichier Makefile pour la compilation
+│   └── main.c         # Programme principal
 ├── data/              # Données d'entrée
-│   └── DATA_CWIRE.csv
+│   ├── c-wire_v00.csv # Fichier de données initial
+│   └── input/         # Fichiers d'entrée supplémentaires
 ├── graphs/            # Graphiques générés
+│   └── lv_consumption 
+├── output/            # Résultats de sortie générés à l'exécution
+│   └── lv_all_minmax.csv # Exemple de fichier de sortie
+├── test/              # Résultats finaux
 ├── tmp/               # Fichiers temporaires
-├── output/            # Résultats de sortie et test
-│   └── lv_all_minmax.csv # exemple de fichier de sortie
 
 On a également en plus de ça le Rapport de projet C-Wire.pdf qui contient le compte rendu sur l'organisation de notre équipe au cours du projet et les difficulté rencontrées.
 
