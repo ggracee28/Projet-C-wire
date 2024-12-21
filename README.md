@@ -25,8 +25,7 @@ c-wire/
 │   └── lv_all_minmax.csv # Exemple de fichier de sortie
 ├── test/              # Résultats finaux
 ├── tmp/               # Fichiers temporaires
-
-On a également en plus de ça le Rapport de projet C-Wire.pdf qui contient le compte rendu sur l'organisation de notre équipe au cours du projet et les difficulté rencontrées.
+└── Rapport de Projet C-Wire # Compte rendu sur l'organisation de l'équipe et les difficultés rencontrées
 
 
 ### Installation
