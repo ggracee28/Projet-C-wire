@@ -129,7 +129,7 @@ int main(int argc, char* argv[]) {
             station_id = record.lv_station;
         }
 
-        // Vérifie si c'est une ligne de consommation valide selon le type demandé
+        // Checks whether it is a valid consumption line of the type requested
         if (strcmp(consumer_type, "comp") == 0 && is_company_only(&record)) {
             load = record.load;
             processed_count++;
