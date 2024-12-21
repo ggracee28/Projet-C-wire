@@ -44,6 +44,7 @@ On a également en plus de ça le Rapport de projet C-Wire.pdf qui contient le c
 4. Dans le terminal, lancer le script Shell c-wire.sh en utilisant: 
 ./c-wire.sh data/<fichier_csv><type de station voulu><type de consommateur voulu><identifiant de la centrale (facultatif)>
 5. En cas d'erreur lors de l'éxecution de script Shell, pour rendre le fichier éxécutable, écrire: chmod777 c-wire.sh
+6. Si vous avez besoin d'aide vous pouvez écrire : ./c-wire.sh -h. Une page d'aide s'affichera alors.
 
 Différentes stations:
 - HVB
@@ -52,13 +53,12 @@ Différentes stations:
 
 Consommateurs disponibles:
 - comp
-- HVA
 - indiv
-- all (indiv + comp + HVA)
+- all (indiv + comp)
 
 exemples de sasie:
-- ./c-wire/c-wire.sh data/c-wire_v00.csv hvb comp
-- ./c-wire/c-wire.sh data/c-wire_v00.csv lv all
+- ./c-wire.sh data/c-wire_v00.csv hvb comp
+- ./c-wire.sh data/c-wire_v00.csv lv all
 
 
 ##### Auteurs
@@ -66,30 +66,3 @@ Alexandre KLOBB
 Grace BIDI SINDA
 Maëlle SMILIANITCH
 
-
-##c-wire.sh 
-Le script shell principal permet:
-- D'afficher de l'aide en cas de besoin
-- Valider les paramètres initiales (nombre d'arguments, type de consommateur etc.)
-- Vérification de l'existence du fichier csv
-- Création des répertoires temp, graphs et output s'ils n'existent pas
-- Compile le code en C
-- Filtrage des données
-
-##codeC
-- Définition de la strucutre de base dans avl_tree.h
-- Codage de l'arbre dans avl_tree.c
-- Programme en c dans le main.c
-- Makefile
-
-##data
-- emplacement du fichier d'entrée
-
-##graphs
--  génération des graphs pour le bonus
-
-##output
-- les différents fichiers de résultat
-
-##tmp
-- fichiers temporaires
