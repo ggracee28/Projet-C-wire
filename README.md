@@ -41,8 +41,9 @@ On a également en plus de ça le Rapport de projet C-Wire.pdf qui contient le c
 1. Télécharger le dossier en cliquant sur "code" et "Download.zip"
 2. Extraire le dossier en le dé-zippant
 3. Placer votre fichier au format .csv à traiter dans le fichier input de notre projet c-wire
-4. Dans le terminal, lancer le script c-wire.sh en utilisant: 
-./c-wire/c-wire.sh <type de station voulu><type de consommateur voulu><identifiant de la centrale (facultatif)>
+4. Dans le terminal, lancer le script Shell c-wire.sh en utilisant: 
+./c-wire.sh data/<fichier_csv><type de station voulu><type de consommateur voulu><identifiant de la centrale (facultatif)>
+5. En cas d'erreur lors de l'éxecution de script Shell, pour rendre le fichier éxécutable, écrire: chmod777 c-wire.sh
 
 Différentes stations:
 - HVB
