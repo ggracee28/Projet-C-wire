@@ -26,14 +26,14 @@ C-Wire/
 On a également en plus de ça le Rapport de projet C-Wire.pdf qui contient le compte rendu sur l'organisation de notre équipe au cours du projet et les difficulté rencontrées.
 
 
-## Installation
+### Installation
 
 - Ouverture d'un terminal en C
 - Executer les commandes suivantes pour installer gnuplot:
     sudo apt-get update
     sudo apt-get install gnuplot
 
-## Utilisation
+#### Utilisation
 
 1. Télécharger le dossier en cliquant sur "code" et "Download.zip"
 2. Extraire le dossier en le dé-zippant
@@ -57,7 +57,7 @@ exemples de sasie:
 - ./c-wire/c-wire.sh data/c-wire_v00.csv lv all
 
 
-## Auteurs
+##### Auteurs
 Alexandre KLOBB
 Grace BIDI SINDA
 Maëlle SMILIANITCH
