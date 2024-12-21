@@ -27,7 +27,7 @@ if [ "$1" == "-h" ]; then
     show_help
 fi
 
-# Vérification du nombre minimum d'arguments
+# Checking the minimum number of arguments
 if [ $# -lt 3 ]; then
     echo "Error: Not enough arguments."
     show_help
@@ -138,29 +138,29 @@ if [ -s "$OUTCSV" ]; then
     echo "$header" > "$SORTED"
     tail -n +2 "$OUTCSV" | grep -v '^-:' | sort -t: -k2,2n >> "$SORTED"
 
-    # Si lv all, créer lv_all_minmax.csv
+    # If lv all, create lv_all_minmax.csv
     if [ "$STATION_TYPE" == "lv" ] && [ "$CONSUMER_TYPE" == "all" ]; then
         MINMAX="output/lv_all_minmax.csv"
         if [ -n "$POWER_PLANT_ID" ]; then
             MINMAX="output/lv_all_minmax_${POWER_PLANT_ID}.csv"
         fi
 
-        # Garde l'en-tête
+        # Keep the header
         echo "$header" > "$MINMAX"
 
-        # Calcule la différence (capacité - consommation) et trie
+        # Calculate the difference (capacity - consumption) and sort by
         tail -n +2 "$SORTED" | awk -F':' '$1 != "-" {
             diff = $2 - $3;
             printf "%s:%s:%s:%.0f\n", $1, $2, $3, diff;
         }' | sort -t: -k4,4n -u > tmp/diff_sorted.csv
 
-        # Sélectionne les 10 premiers et 10 derniers uniquement
+        # Selects the first 10 and last 10 only
         {
             head -n 10 tmp/diff_sorted.csv
             tail -n 10 tmp/diff_sorted.csv
         } | sort -t: -k4,4n | cut -d: -f1-3 >> "$MINMAX"
 
-        # Si gnuplot est disponible, génère un graphique
+        # If gnuplot is available, generate a graph
         if command -v gnuplot &> /dev/null; then
             # Prépare les données pour gnuplot
             awk -F':' '{
