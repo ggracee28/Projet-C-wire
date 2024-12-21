@@ -65,3 +65,31 @@ exemples de sasie:
 Alexandre KLOBB
 Grace BIDI SINDA
 Maëlle SMILIANITCH
+
+
+##c-wire.sh 
+Le script shell principal permet:
+- D'afficher de l'aide en cas de besoin
+- Valider les paramètres initiales (nombre d'arguments, type de consommateur etc.)
+- Vérification de l'existence du fichier csv
+- Création des répertoires temp, graphs et output s'ils n'existent pas
+- Compile le code en C
+- Filtrage des données
+
+##codeC
+- Définition de la strucutre de base dans avl_tree.h
+- Codage de l'arbre dans avl_tree.c
+- Programme en c dans le main.c
+- Makefile
+
+##data
+- emplacement du fichier d'entrée
+
+##graphs
+-  génération des graphs pour le bonus
+
+##output
+- les différents fichiers de résultat
+
+##tmp
+- fichiers temporaires
