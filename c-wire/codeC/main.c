@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
 
     fclose(file);
 
-    // Impression de l'en-tête
+    // Printing the header
     fprintf(stdout, "Station ");
     if (strcmp(station_type, "hvb") == 0) {
         fprintf(stdout, "HVB:Capacité:Consommation (entreprises)\n");
