@@ -70,7 +70,7 @@ Node* insert(Node* node, const char* id, double capacity, double consumption) {
         if (capacity > node->capacity) {
             node->capacity = capacity; 
         }
-        // On additionne la consommation
+        // We add up the consumption
         node->consumption += consumption;
     } else if (cmp < 0) {
         node->left = insert(node->left, id, capacity, consumption);
