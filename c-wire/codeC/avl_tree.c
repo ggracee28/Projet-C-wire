@@ -81,7 +81,7 @@ Node* insert(Node* node, const char* id, double capacity, double consumption) {
     node->height = 1 + max(height(node->left), height(node->right));
     int balance = getBalance(node);
 
-    // Rotations AVL
+    // AVL Rotations
     if (balance > 1 && strcmp(id, node->left->id) < 0)
         return rightRotate(node);
 
