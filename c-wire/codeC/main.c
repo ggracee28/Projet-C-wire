@@ -51,7 +51,7 @@ static int is_empty_or_dash(const char* str) {
     return str == NULL || strlen(str) == 0 || strcmp(str, "-") == 0;
 }
 
-// Vérifie si la chaîne contient un identifiant valide (non vide et pas un tiret)
+//// Checks whether the string contains a valid identifier (non-empty and not a hyphen)
 static int is_valid_id(const char* str) {
     return str != NULL && strlen(str) > 0 && strcmp(str, "-") != 0;
 }
