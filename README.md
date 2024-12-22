@@ -58,6 +58,7 @@ Consommateurs disponibles:
 exemples de sasie:
 - ./c-wire.sh data/c-wire_v00.csv hvb comp
 - ./c-wire.sh data/c-wire_v00.csv lv all
+- ./c-wire.sh data/c-wire_v00.csv hvb comp 1
 
 
 ##### Auteurs
