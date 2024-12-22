@@ -41,7 +41,7 @@ c-wire/
 2. Extraire le dossier en le dé-zippant
 3. Placer votre fichier au format .csv à traiter dans le fichier input de notre projet c-wire
 4. Dans le terminal, lancer le script Shell c-wire.sh en utilisant: 
-./c-wire.sh data/<fichier_csv><type de station voulu><type de consomateur voulu><identifiant de la centrale (facultatif)>
+./c-wire.sh data/<fichier_csv><type de station voulu><typede consommateur voulu><identifiant de la centrale (facultatif)>
 5. En cas d'erreur lors de l'éxecution de script Shell, pour rendre le fichier éxécutable, écrire: chmod777 c-wire.sh
 6. Si vous avez besoin d'aide vous pouvez écrire : ./c-wire.sh -h. Une page d'aide s'affichera alors.
 
