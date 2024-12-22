@@ -17,7 +17,7 @@ c-wire/
 │   ├── avl_tree.h     # Déclaration des fonctions et structures AVL
 │   └── main.c         # Programme principal
 ├── data/              # Données d'entrée
-│   ├── c-wire_v00.csv # Fichier de données initial
+│   ├── c-wire_v00.csv # Fichier de données 
 │   └── input/         # Fichiers d'entrée supplémentaires
 ├── graphs/            # Graphiques générés
 │   └── lv_consumption 
