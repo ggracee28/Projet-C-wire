@@ -26,7 +26,7 @@ c-wire/
 ├── test/              # Résultats finaux
 ├── tmp/               # Fichiers temporaires
 └── Rapport de Projet C-Wire # Compte rendu sur l'organisation de l'équipe et les difficultés rencontrées
-
+```
 
 ### Installation
 
